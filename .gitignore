@@ -15,10 +15,10 @@ __pycache__/
 *.sublime-project
 *.sublime-workspace
 
-static/
-media/
+# static/
+# media/
 
-db.sqlite3
+# db.sqlite3
 
 htmlcov/
 .coverage
