@@ -36,11 +36,11 @@ class TestRoutes(TestCase):
 
         autorised_urls = (
             ('notes:add', None),
-            ('notes:edit', self.Note_test.slug),
-            # ('notes:detail', self.Note_test.slug),
-            # ('notes:delete', self.Note_test.slug),
+            ('notes:edit', [self.Note_test.slug,]),
+            ('notes:detail', [self.Note_test.slug,]),
+            ('notes:delete', [self.Note_test.slug,]),
             # ('notes:list', None),
-            # ('notes: sucsess', None)
+            # ('notes:success', None)
         )
 
         # При обращении к страницам редактирования и удаления записи
@@ -67,11 +67,11 @@ class TestRoutes(TestCase):
             #  перебираем имена тестируемых страниц:
             for name, args in autorised_urls:
                 with self.subTest(user=user, name=name):
-                    print('name= ', name, ', args= ', args)
+                    # print('name= ', name, ', args= ', args, 'type(args)= ', type(args))
                     url = reverse(name, args=args)
-                    print(url)
-                #     response = self.client.get(url)
-                #     self.assertEqual(response.status_code, status)
+                    response = self.client.get(url)
+                    print('url=', url, ', response.status_code=', response.status_code, ', status=', status)
+                    # self.assertEqual(response.status_code, status)
 
     # def test_redirect_for_anonymous_client(self):
         # Сохраняем адрес страницы логина:
