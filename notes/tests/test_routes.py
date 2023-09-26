@@ -24,54 +24,54 @@ class TestRoutes(TestCase):
             )
 
     def test_pages_availability(self):
-        # Создаём набор тестовых данных - кортеж кортежей.
-        # Каждый вложенный кортеж содержит два элемента:
-        # имя пути и позиционные аргументы для функции reverse().
-        unautorised_urls = (
-            ('notes:home', None),
-            ('users:login', None),
-            ('users:logout', None),
-            ('users:signup', None)
-        )
-
-        autorised_urls = (
-            ('notes:add', None),
-            ('notes:edit', [self.Note_test.slug,]),
-            ('notes:detail', [self.Note_test.slug,]),
-            ('notes:delete', [self.Note_test.slug,]),
-            # ('notes:list', None),
-            # ('notes:success', None)
-        )
 
         # При обращении к страницам редактирования и удаления записи
         users_statuses = (
-            (self.author, HTTPStatus.OK),  # автор записи должен получить ответ OK,
-            (self.reader, HTTPStatus.NOT_FOUND),  # читатель должен получить ответ NOT_FOUND.
-
+            (self.author, HTTPStatus.OK),  # автор должен получить ответ OK,
+            (self.reader, HTTPStatus.NOT_FOUND),  # а читатель - NOT_FOUND.
         )
 
-        # Итерируемся по внешнему кортежу
-        # и распаковываем содержимое вложенных кортежей:
-        for name, args in unautorised_urls:
-            with self.subTest(name=name):
-                # Передаём имя и позиционный аргумент в reverse()
-                # и получаем адрес страницы для GET-запроса:
+        # Проверки для авторизованного юзера, но любого.
+        self.client.force_login(self.author)
+        for name, args in (
+            ('notes:add', None),
+            ('notes:list', None),
+            ('notes:success', None)
+        ):
+            with self.subTest(user=self.author, name=name):
                 url = reverse(name, args=args)
                 response = self.client.get(url)
                 self.assertEqual(response.status_code, HTTPStatus.OK)
 
+        # Проверки для неавторизованного юзера.
+        # Итерируемся по внешнему кортежу
+        # и распаковываем содержимое вложенных кортежей:
+        for name, args in (
+            ('notes:home', None),
+            ('users:login', None),
+            ('users:logout', None),
+            ('users:signup', None),
+        ):
+            with self.subTest(name=name):
+                url = reverse(name, args=args)
+                response = self.client.get(url)
+                self.assertEqual(response.status_code, HTTPStatus.OK)
+
+        # Проверки для авторизованного юзера и именного нужного.
         for user, status in users_statuses:
             #  Логиним пользователя в клиенте:
             self.client.force_login(user)
             #  Для каждой пары "пользователь - ожидаемый ответ"
             #  перебираем имена тестируемых страниц:
-            for name, args in autorised_urls:
+            for name, args in (
+                ('notes:edit', (self.Note_test.slug,)),
+                ('notes:detail', (self.Note_test.slug,)),
+                ('notes:delete', (self.Note_test.slug,)),
+            ):
                 with self.subTest(user=user, name=name):
-                    # print('name= ', name, ', args= ', args, 'type(args)= ', type(args))
                     url = reverse(name, args=args)
                     response = self.client.get(url)
-                    print('url=', url, ', response.status_code=', response.status_code, ', status=', status)
-                    # self.assertEqual(response.status_code, status)
+                    self.assertEqual(response.status_code, status)
 
     # def test_redirect_for_anonymous_client(self):
         # Сохраняем адрес страницы логина:
