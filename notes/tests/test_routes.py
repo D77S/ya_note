@@ -69,6 +69,7 @@ class TestRoutes(TestCase):
                 with self.subTest(user=user, name=name):
                     print('name= ', name, ', args= ', args)
                     url = reverse(name, args=args)
+                    print(url)
                 #     response = self.client.get(url)
                 #     self.assertEqual(response.status_code, status)
 
