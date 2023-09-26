@@ -23,7 +23,7 @@ class NoteBase(LoginRequiredMixin):
 
     def get_queryset(self):
         """Пользователь может работать только со своими заметками."""
-        return self.model.objects.filter(author=self.request.user)
+        return self.model.objects.filter(author=self.request.user)  # type: ignore
 
 
 class NoteCreate(NoteBase, generic.CreateView):
