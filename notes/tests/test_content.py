@@ -20,7 +20,7 @@ class TestDetailNote(TestCase):
     @classmethod
     def setUpTestData(cls):
         # Создаем автора тестовой заметки.
-        cls.author = User.objects.create(username='Комментатор')
+        cls.author = User.objects.create(username='Автор тестовой заметки')
         # Создаем тестовую заметку
         cls.note = Note.objects.create(
             title='Тестовая_заметка',
