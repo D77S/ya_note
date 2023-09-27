@@ -35,13 +35,11 @@ class TestDetailNote(TestCase):
             'notes:edit',
             args=(cls.note.slug,)  # type: ignore
         )  # type: ignore
-        print(cls.editnote_url)
 
     def test_anonymous_client_has_no_editform(self):
         '''Проверка, что анонимусу НЕ видна страинца редактирования заметки.
         '''
         response = self.client.get(self.editnote_url)
-        print('response.status_code=', response.status_code)
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
 
     def test_authorized_client_has_editform(self):
@@ -50,5 +48,4 @@ class TestDetailNote(TestCase):
         # Авторизуем клиент при помощи ранее созданного пользователя.
         self.client.force_login(self.author)
         response = self.client.get(self.editnote_url)
-        # print('response.context=', response.context)
         self.assertIn('form', response.context)
