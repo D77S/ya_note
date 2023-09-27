@@ -1,13 +1,16 @@
-# Пока непонятно, что из контента будем тестировать.
+# Тестировать ли количество заметок на одной странице?
+# Так пагинатора вообще ж нет никакого.
+# Не тестируем.
 
-# Количество заметок на одной странице? Так пагинатора вообще ж нет никакого.
+# Тестировать ли сортировку заметок? Так не по чем сортировать,
+# в модели нет ни одного поля даты/времени.
+# Не тестируем.
 
-# Сортировку заметок? Так не по чем сортировать,
-# нет ни одного поля даты/времени.
-
-# Разве что, потестим что форма редактирования заметки (по /edit/<slug:slug>/)
-# видна лишь авторизованному пользователю.
+# Тестируем ли форму редактирования заметки (по /edit/<slug:slug>/)?
+# То, что она видна лишь авторизованному пользователю.
+# Да, это можем. Тестируем.
 from django.contrib.auth import get_user_model
+from http import HTTPStatus
 from django.test import TestCase
 from notes.models import Note
 from django.urls import reverse
@@ -34,12 +37,12 @@ class TestDetailNote(TestCase):
         )  # type: ignore
         print(cls.editnote_url)
 
-    # def test_anonymous_client_has_no_editform(self):
-    #     '''Проверка, что анонимусу НЕ видна форма редактирования заметки.
-    #     '''
-    #     response = self.client.get(self.editnote_url)
-    #     print('response.context=', response.context)
-    #     # self.assertNotIn('form', response.context)
+    def test_anonymous_client_has_no_editform(self):
+        '''Проверка, что анонимусу НЕ видна страинца редактирования заметки.
+        '''
+        response = self.client.get(self.editnote_url)
+        print('response.status_code=', response.status_code)
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
 
     def test_authorized_client_has_editform(self):
         '''Проверка, что автору видна форма редактирования заметки.
