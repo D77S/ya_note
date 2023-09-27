@@ -118,14 +118,24 @@ class TestNoteEditDelete(TestCase):
             slug=NOTE_SLUG,
             author=cls.author,
         )
-
         # URL для редактирования записи.
-        # cls.edit_url = reverse('news:edit', args=(cls.comment.id,))
+        cls.edit_url = reverse('notes:edit', args=(cls.Note_author.slug,))
         # URL для удаления записи.
-        # cls.delete_url = reverse('news:delete', args=(cls.comment.id,))
+        cls.delete_url = reverse('notes:delete', args=(cls.Note_author.slug,))
         # Формируем данные для POST-запроса по обновлению записи.
-        # cls.form_data = {'text': cls.NEW_COMMENT_TEXT}
+        cls.form_data = {'text': cls.NOTE_NEW_TEXT}
 
     def test_author_can_delete_note(self):
+        '''Проверим, что автор может удалить свой комментарий.
+        '''
         notes_count = Note.objects.count()
         self.assertEqual(notes_count, 1)
+        # От имени автора заметки отправляем DELETE-запрос на удаление.
+        response = self.author_client.delete(self.delete_url)
+        # Проверяем, что редирект верный.
+        # Заодно проверим статус-коды ответов.
+        self.assertRedirects(response, reverse('notes:success', args=None))
+        # Считаем количество комментариев в системе.
+        notes_count = Note.objects.count()
+        # Ожидаем ноль комментариев в системе.
+        self.assertEqual(notes_count, 0)
