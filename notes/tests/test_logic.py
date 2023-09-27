@@ -149,13 +149,11 @@ class TestNoteEditDelete(TestCase):
         notes_count = Note.objects.count()
         self.assertEqual(notes_count, 1)
 
-    # def test_author_can_edit_comment(self):
-        # '''Проверим, что автор может редактировать свою заметку.
-        # '''
+    def test_author_can_edit_comment(self):
+        '''Проверим, что автор может редактировать свою заметку.
+        '''
         # Выполняем запрос на редактирование от имени автора заметки.
-        # response = self.author_client.post(self.edit_url, data=self.form_data)
-        # Редирект почему-то не срабатывает
-        # self.assertRedirects(response, reverse('notes:success', args=None))
+        response = self.author_client.post(self.edit_url, data=self.form_data, follow=True)
         # Обновляем объект заметки.
         # self.Note_author.refresh_from_db()
         # Текст заметки почему-то не соответствует обновленному.
