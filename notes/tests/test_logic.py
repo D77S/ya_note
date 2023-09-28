@@ -160,7 +160,7 @@ class TestNoteEditDelete(TestCase):
         response = self.author_client.post(self.edit_url, data=self.form_data)
         # Обновляем объект заметки.
         self.Note_author.refresh_from_db()
-        # Текст заметки почему-то не соответствует обновленному.
+        # Текст заметки соответствует обновленному.
         self.assertEqual(self.Note_author.text, self.NOTE_NEW_TEXT)
 
     def test_user_cant_edit_note_of_another_user(self):
