@@ -98,8 +98,7 @@ class TestNoteEditDelete(TestCase):
     возможности редактировать и удалить свою запись,
     невозможности редактировать и удалить чужую запись.
     '''
-    NOTE_NEW_TEXT = 'Обновлённый текст записи'
-
+    
     @classmethod
     def setUpTestData(cls):
         # Создаём автора и его клиент,
@@ -123,7 +122,12 @@ class TestNoteEditDelete(TestCase):
         # URL для удаления записи.
         cls.delete_url = reverse('notes:delete', args=(cls.Note_author.slug,))
         # Формируем данные для POST-запроса по обновлению записи.
-        cls.form_data = {'text': cls.NOTE_NEW_TEXT}
+        cls.NOTE_NEW_TEXT = 'Обновлённый текст записи'
+        cls.form_data = {
+            'title': NOTE_TITLE,
+            'text': cls.NOTE_NEW_TEXT,
+            'slug': 'new-slug'
+        }
 
     def test_author_can_delete_note(self):
         '''Проверим, что автор может удалить свою заметку.
