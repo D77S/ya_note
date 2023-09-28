@@ -158,6 +158,7 @@ class TestNoteEditDelete(TestCase):
         '''
         # Выполняем запрос на редактирование от имени автора заметки.
         response = self.author_client.post(self.edit_url, data=self.form_data)
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
         # Обновляем объект заметки.
         self.Note_author.refresh_from_db()
         # Текст заметки соответствует обновленному.
