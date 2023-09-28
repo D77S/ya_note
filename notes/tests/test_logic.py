@@ -153,11 +153,11 @@ class TestNoteEditDelete(TestCase):
         '''Проверим, что автор может редактировать свою заметку.
         '''
         # Выполняем запрос на редактирование от имени автора заметки.
-        response = self.author_client.post(self.edit_url, data=self.form_data, follow=True)
+        response = self.author_client.post(self.edit_url, data=self.form_data)
         # Обновляем объект заметки.
-        # self.Note_author.refresh_from_db()
+        self.Note_author.refresh_from_db()
         # Текст заметки почему-то не соответствует обновленному.
-        # self.assertEqual(self.Note_author.text, self.NOTE_NEW_TEXT)
+        self.assertEqual(self.Note_author.text, self.NOTE_NEW_TEXT)
 
     def test_user_cant_edit_note_of_another_user(self):
         # Выполняем запрос на редактирование от имени другого пользователя.
