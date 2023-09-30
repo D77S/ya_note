@@ -9,7 +9,11 @@ import pytest
             (pytest.lazy_fixture('admin_client'), False),  # type: ignore
         )
 )
-def test_note_in_list_for_different_users(note, parametrized_client, note_in_list):
+def test_note_in_list_for_different_users(
+    note,
+    parametrized_client,
+    note_in_list
+):
     url = reverse('notes:list')
     response = parametrized_client.get(url)
     object_list = response.context['object_list']
