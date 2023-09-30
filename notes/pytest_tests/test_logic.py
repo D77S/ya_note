@@ -1,3 +1,4 @@
+from http import HTTPStatus
 import pytest
 
 from pytest_django.asserts import assertRedirects, assertFormError
