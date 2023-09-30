@@ -18,6 +18,8 @@ def author_client(author, client):  # Вызываем фикстуры авто
 
 @pytest.fixture
 def note(author):
+    ''''
+    Возвращает ОБЪЕКТ МОДЕЛИ, заметку note.'''
     note = Note.objects.create(  # Создаем объект заметки.
         title='Заголовок',
         text='Текст заметки',
@@ -30,3 +32,14 @@ def note(author):
 @pytest.fixture
 def slug_for_args(note):
     return (note.slug,)
+
+
+@pytest.fixture
+def form_data():
+    '''
+    Возвращает СЛОВАРЬ, еще одну заметку, другую чем ранее.'''
+    return {
+        'title': 'Новый заголовок',
+        'text': 'Новый текст',
+        'slug': 'new-slug'
+    }

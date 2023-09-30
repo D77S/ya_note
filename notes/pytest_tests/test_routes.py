@@ -46,7 +46,9 @@ def test_pages_availability_for_auth_user(admin_client, name):
     # expected_status - ожидаемый статус ответа.
     'parametrized_client, expected_status',
     (
-        (pytest.lazy_fixture('admin_client'), HTTPStatus.NOT_FOUND),  # type: ignore
+        (pytest.lazy_fixture(
+            'admin_client'
+        ), HTTPStatus.NOT_FOUND),  # type: ignore
         (pytest.lazy_fixture('author_client'), HTTPStatus.OK)  # type: ignore
     ),
 )
