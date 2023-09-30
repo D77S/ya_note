@@ -5,7 +5,7 @@ import pytest
 from pytest_django.asserts import assertRedirects
 
 
-from notes.models import Note
+#  from notes.models import Note
 
 
 # Указываем в фикстурах встроенный клиент.
@@ -46,8 +46,8 @@ def test_pages_availability_for_auth_user(admin_client, name):
     # expected_status - ожидаемый статус ответа.
     'parametrized_client, expected_status',
     (
-        (pytest.lazy_fixture('admin_client'), HTTPStatus.NOT_FOUND),
-        (pytest.lazy_fixture('author_client'), HTTPStatus.OK)
+        (pytest.lazy_fixture('admin_client'), HTTPStatus.NOT_FOUND),  # type: ignore
+        (pytest.lazy_fixture('author_client'), HTTPStatus.OK)  # type: ignore
     ),
 )
 # Декоратор на параметризацию по разным страничкам сайта.
@@ -56,7 +56,11 @@ def test_pages_availability_for_auth_user(admin_client, name):
     ('notes:detail', 'notes:edit', 'notes:delete'),
 )
 def test_page_availability_for_different_users(
-    parametrized_client, name, note, expected_status):
+    parametrized_client,
+    name,
+    note,
+    expected_status
+):
     url = reverse(name, args=(note.slug,))
     response = parametrized_client.get(url)
     assert response.status_code == expected_status
@@ -65,9 +69,9 @@ def test_page_availability_for_different_users(
 @pytest.mark.parametrize(
     'name, args',
     (
-        ('notes:detail', pytest.lazy_fixture('slug_for_args')),
-        ('notes:edit', pytest.lazy_fixture('slug_for_args')),
-        ('notes:delete', pytest.lazy_fixture('slug_for_args')),
+        ('notes:detail', pytest.lazy_fixture('slug_for_args')),  # type: ignore
+        ('notes:edit', pytest.lazy_fixture('slug_for_args')),  # type: ignore
+        ('notes:delete', pytest.lazy_fixture('slug_for_args')),  # type: ignore
         ('notes:add', None),
         ('notes:success', None),
         ('notes:list', None),
