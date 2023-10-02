@@ -13,6 +13,8 @@ User = get_user_model()
 NOTE_TITLE = 'Заголовок заметки'
 NOTE_TEXT = 'Текст заметки'
 NOTE_SLUG = 'AnySlug'
+AUTHOR_USERNAME = 'Лев Толстой'
+READER_USERNAME = 'Читатель простой'
 
 
 class TestNoteCreation(TestCase):
@@ -28,7 +30,7 @@ class TestNoteCreation(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.url = reverse('notes:add', args=None)
-        cls.user = User.objects.create(username='Мимо Крокодил')
+        cls.user = User.objects.create(username=READER_USERNAME)
         cls.auth_client = Client()
         cls.auth_client.force_login(cls.user)
         cls.form_data = {
@@ -42,19 +44,21 @@ class TestNoteCreation(TestCase):
         '''
         Проверяет, что анонимус
         не может создать заметку.'''
+        notes_count_before = Note.objects.count()
         self.client.post(self.url, data=self.form_data)
-        notes_count = Note.objects.count()
-        self.assertEqual(notes_count, 0)  # Ноль штук.
+        notes_count_after = Note.objects.count()
+        self.assertEqual(notes_count_before, notes_count_after)  # Ноль штук.
 
     def test_user_can_create_note(self):
         '''
         Проверяет, что залогиненный
         может создать заметку.'''
+        notes_count_before = Note.objects.count()
         response = self.auth_client.post(self.url, data=self.form_data)
         self.assertRedirects(response, reverse('notes:success'))
-        notes_count = Note.objects.count()
-        self.assertEqual(notes_count, 1)  # Оппа, одна появилась.
+        notes_count_after = Note.objects.count()
         note = Note.objects.get()
+        self.assertEqual(notes_count_after - notes_count_before, 1)
         self.assertEqual(note.title, NOTE_TITLE)
         self.assertEqual(note.text, NOTE_TEXT)
         self.assertEqual(note.author, self.user)
@@ -64,6 +68,7 @@ class TestNoteCreation(TestCase):
         Проверяет, что нельзя использовать повторяющийся
         слаг при создании заметки.
         '''
+        notes_count_before = Note.objects.count()
         response = self.auth_client.post(self.url, data=self.form_data)
         response = self.auth_client.post(self.url, data=self.form_data)
         self.assertFormError(
@@ -72,8 +77,8 @@ class TestNoteCreation(TestCase):
             field='slug',
             errors=NOTE_SLUG + WARNING
         )  # Ошибка формы при НЕпервом запросе с одинаковыми слагами.
-        notes_count = Note.objects.count()
-        self.assertEqual(notes_count, 1)  # Всего одна, не две.
+        notes_count_after = Note.objects.count()
+        self.assertEqual(notes_count_after - notes_count_before, 1)
 
     def test_empty_slug(self):
         '''
@@ -101,10 +106,10 @@ class TestNoteEditDelete(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.author = User.objects.create(username='Лев Толстой')
+        cls.author = User.objects.create(username=AUTHOR_USERNAME)
         cls.author_client = Client()
         cls.author_client.force_login(cls.author)
-        cls.reader = User.objects.create(username='Читатель простой')
+        cls.reader = User.objects.create(username=READER_USERNAME)
         cls.reader_client = Client()
         cls.reader_client.force_login(cls.reader)
         cls.Note_author = Note.objects.create(

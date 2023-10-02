@@ -8,14 +8,16 @@ from notes.models import Note
 
 
 User = get_user_model()
+AUTHOR_USERNAME = 'Лев Толстой'
+READER_USERNAME = 'Читатель простой'
 
 
 class TestRoutes(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.author = User.objects.create(username='Лев Толстой')
-        cls.reader = User.objects.create(username='Читатель простой')
+        cls.author = User.objects.create(username=AUTHOR_USERNAME)
+        cls.reader = User.objects.create(username=READER_USERNAME)
         cls.reader_client = Client()
         cls.reader_client.force_login(cls.reader)
         cls.Note_test = Note.objects.create(
